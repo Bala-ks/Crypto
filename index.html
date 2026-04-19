@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoLab — Cryptography Visualizer</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">CL</div>
+      <div>
+        <div class="brand-name">CryptoLab</div>
+        <div class="brand-tagline">Step-by-Step Visualizer</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <p class="nav-section">Classical</p>
+      <a class="nav-item active" onclick="showPage('caesar',this)"><span class="nav-num">01</span>Shift / Caesar</a>
+      <a class="nav-item" onclick="showPage('vigenere',this)"><span class="nav-num">02</span>Vigenère</a>
+      <a class="nav-item" onclick="showPage('hill',this)"><span class="nav-num">03</span>Hill Cipher</a>
+      <a class="nav-item" onclick="showPage('playfair',this)"><span class="nav-num">04</span>Playfair</a>
+
+      <p class="nav-section">Number Theory</p>
+      <a class="nav-item" onclick="showPage('primality',this)"><span class="nav-num">05</span>Primality — Fermat</a>
+      <a class="nav-item" onclick="showPage('primitive',this)"><span class="nav-num">06</span>Primitive Root</a>
+      <a class="nav-item" onclick="showPage('euclidean',this)"><span class="nav-num">07</span>Euclidean / GCD</a>
+
+      <p class="nav-section">Symmetric</p>
+      <a class="nav-item" onclick="showPage('des',this)"><span class="nav-num">08</span>DES</a>
+      <a class="nav-item" onclick="showPage('aes',this)"><span class="nav-num">09</span>AES</a>
+      <a class="nav-item" onclick="showPage('sha',this)"><span class="nav-num">10</span>SHA-1 / SHA-256</a>
+      <a class="nav-item" onclick="showPage('cmac',this)"><span class="nav-num">11</span>CMAC</a>
+
+      <p class="nav-section">Asymmetric</p>
+      <a class="nav-item" onclick="showPage('dh',this)"><span class="nav-num">12</span>Diffie-Hellman</a>
+      <a class="nav-item" onclick="showPage('rsa',this)"><span class="nav-num">13</span>RSA</a>
+    </nav>
+  </aside>
+
+  <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="main" id="main">
+
+    <!-- ═══════════════════════════════════════ CAESAR -->
+    <section class="page active" id="page-caesar">
+      <header class="page-header">
+        <div class="page-eyebrow">Classical · 01</div>
+        <h1 class="page-title">Shift / Caesar Cipher</h1>
+        <p class="page-desc">Encrypts by shifting each letter a fixed number of positions in the alphabet.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Plaintext / Ciphertext</label><input type="text" id="caesar-text" value="HELLO WORLD"/></div>
+          <div class="field"><label>Shift Key (0–25)</label><input type="number" id="caesar-key" value="3" min="0" max="25"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="caesarEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="caesarDecrypt()">← Decrypt</button>
+            <button class="btn-ghost" onclick="caesarClear()">Clear</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="caesar-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('caesar-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('caesar-steps','Caesar_Cipher')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="caesar-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ VIGENERE -->
+    <section class="page" id="page-vigenere">
+      <header class="page-header">
+        <div class="page-eyebrow">Classical · 02</div>
+        <h1 class="page-title">Vigenère Cipher</h1>
+        <p class="page-desc">A polyalphabetic cipher using a keyword to shift each character differently.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Plaintext / Ciphertext</label><input type="text" id="vig-text" value="ATTACKATDAWN"/></div>
+          <div class="field"><label>Keyword</label><input type="text" id="vig-key" value="LEMON"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="vigEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="vigDecrypt()">← Decrypt</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="vig-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('vig-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('vig-steps','Vigenere_Cipher')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="vig-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ HILL -->
+    <section class="page" id="page-hill">
+      <header class="page-header">
+        <div class="page-eyebrow">Classical · 03</div>
+        <h1 class="page-title">Hill Cipher</h1>
+        <p class="page-desc">Matrix-based polygraphic substitution cipher using linear algebra mod 26.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Plaintext (letters only)</label><input type="text" id="hill-text" value="ACT"/></div>
+          <div class="field">
+            <label>Key Matrix (2×2) — a,b,c,d</label>
+            <input type="text" id="hill-key" value="6,24,1,13"/>
+            <small>Four integers → [[a,b],[c,d]]</small>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" onclick="hillEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="hillDecrypt()">← Decrypt</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="hill-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('hill-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('hill-steps','Hill_Cipher')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="hill-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ PLAYFAIR -->
+    <section class="page" id="page-playfair">
+      <header class="page-header">
+        <div class="page-eyebrow">Classical · 04</div>
+        <h1 class="page-title">Playfair Cipher</h1>
+        <p class="page-desc">Digraph substitution cipher using a 5×5 key matrix. J is merged with I.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Plaintext</label><input type="text" id="pf-text" value="HELLO"/></div>
+          <div class="field"><label>Keyword</label><input type="text" id="pf-key" value="MONARCHY"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="playfairEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="playfairDecrypt()">← Decrypt</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="pf-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('pf-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('pf-steps','Playfair_Cipher')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="pf-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ PRIMALITY -->
+    <section class="page" id="page-primality">
+      <header class="page-header">
+        <div class="page-eyebrow">Number Theory · 05</div>
+        <h1 class="page-title">Primality Testing — Fermat's Theorem</h1>
+        <p class="page-desc">Tests if p is prime using Fermat's Little Theorem: a<sup>p-1</sup> ≡ 1 (mod p).</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Number to Test (p)</label><input type="number" id="prim-p" value="17" min="2"/></div>
+          <div class="field"><label>Number of Witnesses</label><input type="number" id="prim-k" value="5" min="1" max="10"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="testPrimality()">Test Primality</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Verdict</h3>
+          <div class="result" id="prim-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="downloadPDF('prim-steps','Primality_Test')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="prim-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ PRIMITIVE ROOT -->
+    <section class="page" id="page-primitive">
+      <header class="page-header">
+        <div class="page-eyebrow">Number Theory · 06</div>
+        <h1 class="page-title">Primitive Root of a Prime</h1>
+        <p class="page-desc">Checks if g is a primitive root of prime p by computing g<sup>k</sup> mod p for k = 1…p-1.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Prime Number (p)</label><input type="number" id="pr-p" value="7" min="2"/></div>
+          <div class="field"><label>Generator Candidate (g)</label><input type="number" id="pr-g" value="3" min="2"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="primitiveRoot()">Check Root</button>
+            <button class="btn-outline" onclick="findAllPrimitiveRoots()">Find All</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="pr-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="downloadPDF('pr-steps','Primitive_Root')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="pr-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ EUCLIDEAN -->
+    <section class="page" id="page-euclidean">
+      <header class="page-header">
+        <div class="page-eyebrow">Number Theory · 07</div>
+        <h1 class="page-title">Euclidean Algorithm / GCD</h1>
+        <p class="page-desc">Computes GCD via repeated division. Extended version finds Bézout coefficients.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Integer A</label><input type="number" id="euc-a" value="252" min="1"/></div>
+          <div class="field"><label>Integer B</label><input type="number" id="euc-b" value="198" min="1"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="euclideanGCD()">Compute GCD</button>
+            <button class="btn-outline" onclick="extendedEuclidean()">Extended GCD</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="euc-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="downloadPDF('euc-steps','Euclidean_GCD')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="euc-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ DES -->
+    <section class="page" id="page-des">
+      <header class="page-header">
+        <div class="page-eyebrow">Symmetric · 08</div>
+        <h1 class="page-title">DES — Data Encryption Standard</h1>
+        <p class="page-desc">64-bit block cipher with 16 rounds of Feistel structure and a 56-bit key.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Plaintext (16 hex chars = 64 bits)</label><input type="text" id="des-plain" value="0123456789ABCDEF" maxlength="16"/></div>
+          <div class="field"><label>Key (16 hex chars = 64 bits)</label><input type="text" id="des-key" value="133457799BBCDFF1" maxlength="16"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="desEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="desDecrypt()">← Decrypt</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="des-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('des-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('des-steps','DES')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="des-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ AES -->
+    <section class="page" id="page-aes">
+      <header class="page-header">
+        <div class="page-eyebrow">Symmetric · 09</div>
+        <h1 class="page-title">AES — Advanced Encryption Standard</h1>
+        <p class="page-desc">128-bit block cipher with 10 rounds: SubBytes, ShiftRows, MixColumns, AddRoundKey.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Plaintext (32 hex chars = 128 bits)</label><input type="text" id="aes-plain" value="00112233445566778899AABBCCDDEEFF" maxlength="32"/></div>
+          <div class="field"><label>Key (32 hex chars = 128 bits)</label><input type="text" id="aes-key" value="000102030405060708090A0B0C0D0E0F" maxlength="32"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="aesEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="aesDecrypt()">← Decrypt</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="aes-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('aes-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('aes-steps','AES')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="aes-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ SHA -->
+    <section class="page" id="page-sha">
+      <header class="page-header">
+        <div class="page-eyebrow">Symmetric · 10</div>
+        <h1 class="page-title">SHA — Secure Hash Algorithm</h1>
+        <p class="page-desc">One-way cryptographic hash functions producing fixed-size digests from arbitrary input.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Input Message</label><input type="text" id="sha-msg" value="hello"/></div>
+          <div class="field">
+            <label>Algorithm</label>
+            <select id="sha-algo" class="select-input">
+              <option value="sha1">SHA-1 &nbsp;(160-bit digest)</option>
+              <option value="sha256" selected>SHA-256 (256-bit digest)</option>
+            </select>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" onclick="computeSHA()">Compute Hash</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Hash Digest</h3>
+          <div class="result mono-sm" id="sha-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('sha-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('sha-steps','SHA_Hash')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="sha-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ CMAC -->
+    <section class="page" id="page-cmac">
+      <header class="page-header">
+        <div class="page-eyebrow">Symmetric · 11</div>
+        <h1 class="page-title">CMAC — Cipher-Based MAC</h1>
+        <p class="page-desc">Message Authentication Code built on AES-128. Provides integrity and authentication.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Message (hex string)</label><input type="text" id="cmac-msg" value="6BC1BEE22E409F96E93D7E117393172A"/></div>
+          <div class="field"><label>AES-128 Key (32 hex chars)</label><input type="text" id="cmac-key" value="2B7E151628AED2A6ABF7158809CF4F3C" maxlength="32"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="computeCMAC()">Compute CMAC</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">MAC Tag (128-bit)</h3>
+          <div class="result mono-sm" id="cmac-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('cmac-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('cmac-steps','CMAC')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="cmac-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ DIFFIE-HELLMAN -->
+    <section class="page" id="page-dh">
+      <header class="page-header">
+        <div class="page-eyebrow">Asymmetric · 12</div>
+        <h1 class="page-title">Diffie-Hellman Key Exchange</h1>
+        <p class="page-desc">Secure key exchange over a public channel using the discrete logarithm problem.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Parameters</h3>
+          <div class="field"><label>Prime (p)</label><input type="number" id="dh-p" value="23" min="2"/></div>
+          <div class="field"><label>Generator (g)</label><input type="number" id="dh-g" value="5" min="2"/></div>
+          <div class="field"><label>Alice's Private Key (a)</label><input type="number" id="dh-a" value="6" min="1"/></div>
+          <div class="field"><label>Bob's Private Key (b)</label><input type="number" id="dh-b" value="15" min="1"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="diffieHellman()">Compute</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Shared Secret</h3>
+          <div class="result" id="dh-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="downloadPDF('dh-steps','Diffie_Hellman')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="dh-steps"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ RSA -->
+    <section class="page" id="page-rsa">
+      <header class="page-header">
+        <div class="page-eyebrow">Asymmetric · 13</div>
+        <h1 class="page-title">RSA Algorithm</h1>
+        <p class="page-desc">Public-key cryptosystem based on the difficulty of factoring large integers.</p>
+      </header>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Key Generation</h3>
+          <div class="field"><label>Prime p</label><input type="number" id="rsa-p" value="61" min="2"/></div>
+          <div class="field"><label>Prime q</label><input type="number" id="rsa-q" value="53" min="2"/></div>
+          <div class="field"><label>Public Exponent e</label><input type="number" id="rsa-e" value="17" min="2"/></div>
+          <button class="btn-outline" onclick="rsaGenKeys()">Generate Keys</button>
+          <hr class="rule"/>
+          <div class="field"><label>Message (numeric)</label><input type="number" id="rsa-msg" value="65" min="1"/></div>
+          <div class="actions">
+            <button class="btn-primary" onclick="rsaEncrypt()">Encrypt →</button>
+            <button class="btn-outline" onclick="rsaDecrypt()">← Decrypt</button>
+          </div>
+        </div>
+        <div class="card card-result">
+          <h3 class="card-title">Result</h3>
+          <div class="result" id="rsa-result">—</div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="copyResult('rsa-result')">⊕ Copy</button>
+            <button class="btn-ghost" onclick="downloadPDF('rsa-steps','RSA')">↓ PDF</button>
+          </div>
+        </div>
+      </div>
+      <div class="steps-wrap" id="rsa-steps"></div>
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
